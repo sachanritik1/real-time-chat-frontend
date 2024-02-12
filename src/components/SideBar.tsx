@@ -3,7 +3,15 @@ import UserBox from "./UserBox";
 import ProfileBox from "./ProfileBox";
 import ProfileInput from "./ProfileInput";
 
-const SideBar = () => {
+const SideBar = ({
+  roomIds,
+  joinRoom,
+  setRoomId,
+}: {
+  roomIds: string[];
+  joinRoom: Function;
+  setRoomId: Function;
+}) => {
   return (
     <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
       <div className="flex flex-row items-center justify-center h-12 w-full">
@@ -13,7 +21,7 @@ const SideBar = () => {
         <div className="ml-2 font-bold text-2xl">QuickChat</div>
       </div>
       <UserBox />
-      <ProfileBox />
+      <ProfileBox roomIds={roomIds} joinRoom={joinRoom} setRoomId={setRoomId} />
       <ProfileInput />
     </div>
   );

@@ -13,3 +13,23 @@ export const LOGO_SVG = (
     ></path>
   </svg>
 );
+
+export type ChatType = {
+  chatId: string;
+  roomId: string;
+  userId: string;
+  name: string;
+  message: string;
+  upvotes: number;
+};
+
+export enum SupportedIncomingMessage {
+  JoinRoom = "JOIN_ROOM",
+  SendMessage = "SEND_MESSAGE",
+  UpvoteMessage = "UPVOTE_MESSAGE",
+}
+
+export enum SupportedOutgoingMessage {
+  AddChat = "ADD_CHAT",
+  UpdateChat = "UPDATE_CHAT",
+}

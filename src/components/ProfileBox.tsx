@@ -1,18 +1,36 @@
 import ChatProfileButton from "./ChatProfileButton";
 
-const ProfileBox = () => {
+const ProfileBox = ({
+  roomIds,
+  joinRoom,
+  setRoomId,
+}: {
+  roomIds: string[];
+  joinRoom: Function;
+  setRoomId: Function;
+}) => {
   return (
     <div>
       <div className="flex flex-col mt-8">
         <div className="flex flex-row items-center justify-between text-xs">
-          <span className="font-bold">Active Conversations</span>
+          <span className="font-bold">Active Rooms</span>
           <span className="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
-            4
+            {roomIds.length}
           </span>
         </div>
         <div className="flex flex-col space-y-1 mt-4 -mx-2 h-64 overflow-y-auto">
-          {Array.from("helloworld").map((_, i) => (
-            <ChatProfileButton key={i} />
+          {roomIds.length === 0 && (
+            <div className="flex flex-row items-center text-sm p-2">
+              No Rooms Active
+            </div>
+          )}
+          {roomIds.map((roomId) => (
+            <ChatProfileButton
+              key={roomId}
+              roomId={roomId}
+              joinRoom={joinRoom}
+              setRoomId={setRoomId}
+            />
           ))}
         </div>
       </div>

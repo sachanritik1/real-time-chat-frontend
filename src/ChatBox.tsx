@@ -1,97 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-
-type Chat = {
-  chatId: string;
-  roomId: string;
-  name: string;
-  message: string;
-  upvotes: number;
-};
-
-// test chats
-const CHATS: Chat[] = [
-  {
-    chatId: "fjbfjk",
-    roomId: "1",
-    name: "Doe",
-    message: "Hello World",
-    upvotes: 0,
-  },
-  {
-    chatId: "fdjkb fjks",
-    roomId: "1",
-    name: "Doe",
-    message: "Hello World",
-    upvotes: 0,
-  },
-  {
-    chatId: "f dns fnd ",
-    roomId: "1",
-    name: "Doe",
-    message: "Hello World",
-    upvotes: 0,
-  },
-  {
-    chatId: "fdsjf smd",
-    roomId: "1",
-    name: "Doe",
-    message: "Hello World",
-    upvotes: 0,
-  },
-  {
-    chatId: "fdsjf ",
-    roomId: "1",
-    name: "Doe",
-    message: "Hello World",
-    upvotes: 0,
-  },
-];
-
-export enum SupportedIncomingMessage {
-  JoinRoom = "JOIN_ROOM",
-  SendMessage = "SEND_MESSAGE",
-  UpvoteMessage = "UPVOTE_MESSAGE",
-}
-
-export enum SupportedOutgoingMessage {
-  AddChat = "ADD_CHAT",
-  UpdateChat = "UPDATE_CHAT",
-}
+import { useEffect, useRef } from "react";
+import { Chat, SupportedIncomingMessage } from "./constants";
 
 const ChatBox = () => {
-  const [chats, setChats] = useState<Chat[]>(CHATS);
   const chatRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const ws = useRef<WebSocket | null>(null);
-
-  useEffect(() => {
-    ws.current = new WebSocket("ws://localhost:8080");
-    ws.current.onopen = () => {
-      console.log("Connected to server");
-    };
-    ws.current.onmessage = (message) => {
-      console.log(message.data);
-      const outgoingMessage = JSON.parse(message.data);
-      if (outgoingMessage.type === SupportedOutgoingMessage.AddChat) {
-        const chat: Chat = outgoingMessage.payload;
-        setChats([...chats, chat]);
-      } else if (outgoingMessage.type === SupportedOutgoingMessage.UpdateChat) {
-        const chat = chats.find(
-          (c) => c.chatId == outgoingMessage.payload.chatId
-        );
-        const updatedChat = {
-          ...chat,
-          ...outgoingMessage.payload,
-        };
-        setChats([...chats, updatedChat]);
-      } else {
-        console.log("Unsupported Message Types");
-      }
-    };
-    ws.current.onclose = () => {
-      console.log("Disconnected from server");
-    };
-  }, []);
 
   const addChat = () => {
     const message = chatRef.current?.value;
@@ -111,20 +23,6 @@ const ChatBox = () => {
       ws.current?.send(JSON.stringify(data));
       chatRef.current.value = "";
     }
-  };
-
-  const joinRoom = () => {
-    const name = nameRef?.current?.value;
-    const data = {
-      type: SupportedIncomingMessage.JoinRoom,
-      payload: {
-        roomId: "1",
-        userId: name,
-        name,
-      },
-    };
-    if (!ws) return;
-    ws.current?.send(JSON.stringify(data));
   };
 
   return (

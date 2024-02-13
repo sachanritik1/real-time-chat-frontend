@@ -1,8 +1,34 @@
 import { useRef } from "react";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "../store/store";
+import { SupportedIncomingMessage } from "../constants";
+import { wsAtom } from "../store/store";
+import { currentRoomIdAtom } from "../store/store";
 
-const ChatInput = ({ addChat }: { addChat: Function }) => {
+const ChatInput = () => {
+  const user = useRecoilValue(userAtom);
+  const ws = useRecoilValue(wsAtom);
+  const roomId = useRecoilValue(currentRoomIdAtom);
+
+  const addChat = (message: string) => {
+    if (message) {
+      const newChat = {
+        roomId,
+        userId: user?.userId,
+        message,
+      };
+      const data = {
+        type: SupportedIncomingMessage.SendMessage,
+        payload: newChat,
+      };
+      if (!ws) return;
+      ws?.send(JSON.stringify(data));
+    }
+  };
+
   const chatRef = useRef<HTMLInputElement>(null);
-  const handleAddChat = () => {
+  const handleAddChat = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const chat = chatRef.current?.value;
     if (!chat) return;
     addChat(chat);
@@ -11,7 +37,10 @@ const ChatInput = ({ addChat }: { addChat: Function }) => {
   };
 
   return (
-    <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+    <form
+      onSubmit={(e) => handleAddChat(e)}
+      className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4"
+    >
       <div className="flex-grow ml-4">
         <div className="relative w-full">
           <input
@@ -23,7 +52,7 @@ const ChatInput = ({ addChat }: { addChat: Function }) => {
       </div>
       <div className="ml-4">
         <button
-          onClick={handleAddChat}
+          type="submit"
           className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
         >
           <span>Send</span>
@@ -44,7 +73,7 @@ const ChatInput = ({ addChat }: { addChat: Function }) => {
           </span>
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 

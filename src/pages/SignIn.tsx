@@ -1,20 +1,23 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userAtom } from "../store/store";
 
 const SignIn = () => {
   const userIdRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userAtom);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userId = userIdRef.current?.value;
     const name = nameRef.current?.value;
     if (!userId || !name) return;
-    localStorage.setItem("userId", userId);
-    localStorage.setItem("name", name);
-    navigate("/");
+    setUser({ userId, name });
   };
-  return (
+  return user ? (
+    <Navigate to="/" />
+  ) : (
     <div className="flex flex-col justify-center items-center mx-auto h-screen">
       <h1 className="my-4 text-3xl font-bol -mt-20">Welcome!</h1>
       <div className="bg-slate-300 p-4 rounded-lg">

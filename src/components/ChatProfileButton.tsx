@@ -1,24 +1,39 @@
-const ChatProfileButton = ({
-  roomId,
-  joinRoom,
-  setRoomId,
-}: {
-  roomId: string;
-  joinRoom: Function;
-  setRoomId: Function;
-}) => {
-  const handleJoinRoom = () => {
+import { useRecoilValue, useRecoilState } from "recoil";
+import { SupportedIncomingMessage } from "../constants";
+import { currentRoomIdAtom, userAtom, wsAtom } from "../store/store";
+
+const ChatProfileButton = ({ roomId }: { roomId: string }) => {
+  const user = useRecoilValue(userAtom);
+  const ws = useRecoilValue(wsAtom);
+  const [currentRoomId, setRoomId] = useRecoilState(currentRoomIdAtom);
+  const joinRoom = (roomId: string) => {
+    const data = {
+      type: SupportedIncomingMessage.JoinRoom,
+      payload: {
+        roomId: roomId,
+        ...user,
+      },
+    };
+    if (!ws) return;
+    ws.send(JSON.stringify(data));
+  };
+  const handleJoinRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.disabled = true;
     console.log(`Joining room ${roomId}`);
     joinRoom(roomId);
     setRoomId(roomId);
+    e.currentTarget.disabled = false;
   };
   return (
     <button
-      onClick={handleJoinRoom}
-      className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
+      onClick={(e) => handleJoinRoom(e)}
+      className={
+        "flex flex-row items-center hover:bg-gray-100 rounded-xl p-2" +
+        (currentRoomId === roomId ? " bg-gray-100" : "")
+      }
     >
       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-        {roomId[0]}
+        {roomId?.[0]}
       </div>
       <div className="ml-2 text-sm font-semibold">{roomId}</div>
     </button>

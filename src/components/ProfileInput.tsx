@@ -1,22 +1,36 @@
 import { useRef } from "react";
+import { useSetRecoilState } from "recoil";
+import { roomIdsAtom } from "../store/store";
 
 const ProfileInput = () => {
   const roomIdRef = useRef<HTMLInputElement>(null);
-  const handleCreateRoom = async () => {
-    const res = await fetch(import.meta.env.VITE_BASE_URL + "/create/room", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomId: roomIdRef.current?.value }),
-    });
-    const json = await res.json();
+  const setRoomIds = useSetRecoilState(roomIdsAtom);
 
-    console.log(json);
+  const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const button = e.currentTarget[1] as HTMLButtonElement;
+    try {
+      button.disabled = true;
+      const res = await fetch(import.meta.env.VITE_BASE_URL + "/create/room", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ roomId: roomIdRef.current?.value }),
+      });
+      const json = await res.json();
+      if (!json.roomId) throw new Error(json.message);
+      setRoomIds((prev) => [...prev, json.roomId]);
+      roomIdRef.current!.value = "";
+    } catch (error) {
+      console.error(error);
+    } finally {
+      button.disabled = false;
+    }
   };
 
   return (
-    <div className="py-4">
+    <form className="py-4" onSubmit={(e) => handleCreateRoom(e)}>
       <input
         ref={roomIdRef}
         type="text"
@@ -24,12 +38,12 @@ const ProfileInput = () => {
         placeholder="Type room id here..."
       />
       <button
-        onClick={handleCreateRoom}
+        type="submit"
         className="w-full h-10 mt-2 bg-indigo-500 hover:bg-indigo-800 text-white rounded-lg"
       >
         Create Room
       </button>
-    </div>
+    </form>
   );
 };
 

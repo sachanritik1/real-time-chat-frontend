@@ -3,7 +3,7 @@ import { useRef } from "react";
 const ProfileInput = () => {
   const roomIdRef = useRef<HTMLInputElement>(null);
   const handleCreateRoom = async () => {
-    const res = await fetch("http://localhost:8080/create/room", {
+    const res = await fetch(import.meta.env.VITE_BASE_URL + "/create/room", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

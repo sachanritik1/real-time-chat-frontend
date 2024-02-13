@@ -15,7 +15,7 @@ const ChatBox = () => {
   console.log(chats);
 
   useEffect(() => {
-    ws.current = new WebSocket("ws://localhost:8080");
+    ws.current = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
     ws.current.onopen = () => {
       console.log("Connected to server");
     };
@@ -54,7 +54,7 @@ const ChatBox = () => {
 
   useEffect(() => {
     const fetchRooms = async () => {
-      const response = await fetch("http://localhost:8080/rooms");
+      const response = await fetch(import.meta.env.VITE_BASE_URL + "/rooms");
       const json = await response.json();
       console.log(json);
       setRoomIds(json.roomIds);

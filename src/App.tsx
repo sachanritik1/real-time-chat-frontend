@@ -8,8 +8,8 @@ function App() {
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-          <Route path="/signin" Component={SignIn} />
-          <Route path="/" Component={ChatBox} />
+          <Route path="/" Component={SignIn} />
+          <Route path="/home" Component={ChatBox} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

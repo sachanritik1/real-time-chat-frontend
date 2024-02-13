@@ -16,7 +16,7 @@ const SignIn = () => {
     setUser({ userId, name });
   };
   return user ? (
-    <Navigate to="/" />
+    <Navigate to="/home" />
   ) : (
     <div className="flex flex-col justify-center items-center mx-auto h-screen">
       <h1 className="my-4 text-3xl font-bol -mt-20">Welcome!</h1>

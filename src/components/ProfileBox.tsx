@@ -13,7 +13,7 @@ const ProfileBox = () => {
             {roomIds.length}
           </span>
         </div>
-        <div className="flex flex-col space-y-1 mt-4 -mx-2 h-64 overflow-y-scroll">
+        <div className="flex flex-col space-y-1 mt-4 -mx-2 h-80 overflow-y-scroll">
           {roomIds.length === 0 && (
             <div className="flex flex-row items-center text-sm p-2">
               No Rooms Active

@@ -8,12 +8,12 @@ import { currentRoomIdAtom } from "../store/store";
 const ChatInput = () => {
   const user = useRecoilValue(userAtom);
   const ws = useRecoilValue(wsAtom);
-  const roomId = useRecoilValue(currentRoomIdAtom);
+  const currentRoomId = useRecoilValue(currentRoomIdAtom);
 
   const addChat = (message: string) => {
     if (message) {
       const newChat = {
-        roomId,
+        roomId: currentRoomId,
         userId: user?.userId,
         message,
       };

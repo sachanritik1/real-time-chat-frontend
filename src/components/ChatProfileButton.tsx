@@ -5,8 +5,8 @@ import { currentRoomIdAtom, userAtom, wsAtom } from "../store/store";
 const ChatProfileButton = ({ roomId }: { roomId: string }) => {
   const user = useRecoilValue(userAtom);
   const ws = useRecoilValue(wsAtom);
-  const [currentRoomId, setRoomId] = useRecoilState(currentRoomIdAtom);
-  const joinRoom = (roomId: string) => {
+  const [currentRoomId, setCurrentRoomId] = useRecoilState(currentRoomIdAtom);
+  const joinRoom = () => {
     const data = {
       type: SupportedIncomingMessage.JoinRoom,
       payload: {
@@ -20,8 +20,8 @@ const ChatProfileButton = ({ roomId }: { roomId: string }) => {
   const handleJoinRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.disabled = true;
     console.log(`Joining room ${roomId}`);
-    joinRoom(roomId);
-    setRoomId(roomId);
+    joinRoom();
+    setCurrentRoomId(roomId);
     e.currentTarget.disabled = false;
   };
   return (
